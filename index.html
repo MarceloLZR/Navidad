@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intercambio de regalos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --spruce:#12372a; --spruce-d:#0c261c; --kraft:#d8b98f; --kraft-d:#b9955f;
+  --cranberry:#8e1b2e; --snow:#f6f3ec; --ink:#2b2118;
+  --serif:"Young Serif",Georgia,serif; --sans:"Karla",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--spruce);color:var(--snow);font:17px/1.5 var(--sans);min-height:100vh}
+header,main,footer{max-width:1040px;margin:0 auto;padding:0 24px}
+header{padding-top:56px;padding-bottom:28px}
+h1{font:400 clamp(2.4rem,7vw,4.4rem)/1.02 var(--serif);margin:0 0 14px;letter-spacing:-.01em}
+header p{margin:0;max-width:52ch;color:#cfe0d6}
+.monto{display:inline-block;margin-top:18px;padding:6px 14px;border:1.5px dashed var(--kraft);color:var(--kraft);font-weight:700;border-radius:3px}
+.tags{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:54px 28px}
+.tag{position:relative;margin-top:26px}
+.tag:nth-child(3n+1){transform:rotate(-1.6deg)}
+.tag:nth-child(3n+2){transform:rotate(1.1deg) translateY(10px)}
+.tag:nth-child(3n){transform:rotate(-.6deg)}
+.tag button{all:unset;display:block;width:100%;cursor:pointer;background:var(--kraft);color:var(--ink);
+  padding:44px 20px 20px;min-height:230px;
+  clip-path:polygon(18% 0,82% 0,100% 12%,100% 100%,0 100%,0 12%);
+  background-image:repeating-linear-gradient(0deg,transparent 0 27px,rgba(90,60,20,.09) 27px 28px)}
+.tag button:hover,.tag button:focus-visible{background-color:#e4c9a2}
+.tag button:focus-visible{outline:3px solid var(--snow);outline-offset:-6px}
+.tag::before{content:"";position:absolute;left:50%;top:-28px;width:2px;height:60px;background:var(--snow);opacity:.85;transform:translateX(-50%) rotate(8deg);z-index:2}
+.tag::after{content:"";position:absolute;left:50%;top:14px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--spruce);box-shadow:inset 0 0 0 3px var(--kraft-d);z-index:2}
+.nombre{font:400 1.7rem/1.1 var(--serif);margin:0 0 10px}
+.ideas{margin:0;padding:0;list-style:none;font-size:.95rem}
+.ideas li{display:flex;justify-content:space-between;gap:10px;padding:2px 0;border-bottom:1px dotted rgba(43,33,24,.4)}
+.ideas span:last-child{font-weight:700;white-space:nowrap}
+.vacio{margin:0;font-size:.95rem;color:#5a4630}
+.accion{margin-top:14px;font-weight:700;color:var(--cranberry);font-size:.9rem}
+footer{padding-top:56px;padding-bottom:60px;color:#9fbcae;font-size:.9rem}
+footer button{font:inherit;color:var(--kraft);background:none;border:0;border-bottom:1px solid var(--kraft);padding:0;cursor:pointer}
+dialog{border:0;padding:0;width:min(560px,94vw);max-height:92vh;background:var(--snow);color:var(--ink);border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(6,20,14,.7)}
+dialog[open]{animation:in .18s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+form{padding:26px 26px 22px}
+form h2{font:400 1.8rem/1.1 var(--serif);margin:0 0 4px;color:var(--cranberry)}
+form .sub{margin:0 0 18px;font-size:.92rem;color:#5a4630}
+.fila{display:grid;grid-template-columns:1fr 110px;gap:10px;margin-bottom:10px}
+label{display:block;font-weight:700;font-size:.85rem;margin-bottom:3px}
+input,textarea{width:100%;font:inherit;padding:9px 10px;border:1.5px solid #b9a98f;border-radius:3px;background:#fff;color:var(--ink)}
+input:focus,textarea:focus{outline:2px solid var(--spruce);border-color:var(--spruce)}
+input.mal{border-color:var(--cranberry);background:#fdeeee}
+.err{color:var(--cranberry);font-size:.85rem;font-weight:700;min-height:1.2em;margin:4px 0 8px}
+.botones{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.botones button{font:700 .95rem var(--sans);padding:10px 16px;border-radius:3px;cursor:pointer;border:1.5px solid var(--spruce);background:none;color:var(--spruce)}
+.botones .ok{background:var(--spruce);color:var(--snow)}
+.botones .cerrar{margin-left:auto;border-color:transparent;text-decoration:underline}
+.aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--snow);color:var(--ink);padding:10px 18px;border-radius:3px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10}
+.aviso.ver{opacity:1}
+@media (prefers-reduced-motion:reduce){dialog[open]{animation:none}.aviso{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Intercambio de regalos</h1>
+  <p>Toca tu etiqueta y anota tres ideas. Quien te toque en el sorteo verá qué te gustaría recibir.</p>
+  <span class="monto">Monto: entre 50 y 100</span>
+</header>
+<main><ul class="tags" id="tags"></ul></main>
+<footer>
+  <p>Lo que escribes se guarda solo en este navegador. Para que todos lo vean, usa «Copiar mi lista» y pégala en el grupo.</p>
+  <p><button id="exportar" type="button">Copiar todas las listas (organizador)</button></p>
+</footer>
+
+<dialog id="dlg">
+  <form id="frm" method="dialog" novalidate>
+    <h2 id="dnombre"></h2>
+    <p class="sub">Precio entre 50 y 100 por idea. Deja vacías las que no uses.</p>
+    <div id="filas"></div>
+    <label for="tienda">Tienda o enlace (opcional)</label>
+    <input id="tienda" type="text" autocomplete="off">
+    <label for="gustos" style="margin-top:10px">Gustos, tallas o colores</label>
+    <textarea id="gustos" rows="2"></textarea>
+    <p class="err" id="err" role="alert"></p>
+    <div class="botones">
+      <button type="submit" class="ok">Guardar lista</button>
+      <button type="button" id="copiar">Copiar mi lista</button>
+      <button type="button" class="cerrar" id="cerrar">Cerrar</button>
+    </div>
+  </form>
+</dialog>
+<div class="aviso" id="aviso" role="status"></div>
+
+<script>
+/* El organizador puede pegar aquí las listas de todos (botón «Copiar todas las listas»)
+   para que cualquiera que abra la página las vea. */
+const LISTAS = {
+  /* Ejemplo:
+  "Xiomy": {ideas:[{t:"Taza térmica",p:65},{t:"Set de chocolates",p:80},{t:"",p:""}],tienda:"",gustos:"Café, color azul"}
+  */
+};
+const NOMBRES = ["Xiomy","Gustavo","Yoshio","Luis","Zinthia","Aldo","Erick","Marcelo","Porfa"];
+const MIN = 50, MAX = 100, KEY = "intercambio-navidad-v1";
+
+let local = {};
+try { local = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const datos = n => local[n] || LISTAS[n] || {ideas:[{},{},{}],tienda:"",gustos:""};
+const llenas = d => (d.ideas||[]).filter(i => i.t && i.t.trim());
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dinero = p => Number(p).toLocaleString("es-PE",{minimumFractionDigits:0,maximumFractionDigits:2});
+
+function pintar(){
+  $("tags").innerHTML = NOMBRES.map(n => {
+    const ideas = llenas(datos(n));
+    const cuerpo = ideas.length
+      ? `<ul class="ideas">${ideas.map(i=>`<li><span>${esc(i.t)}</span><span>${i.p!==""&&i.p!=null?dinero(i.p):""}</span></li>`).join("")}</ul>`
+      : `<p class="vacio">Todavía no hay ideas.</p>`;
+    return `<li class="tag"><button type="button" data-n="${esc(n)}" aria-label="Abrir la lista de ${esc(n)}">
+      <h2 class="nombre">${esc(n)}</h2>${cuerpo}
+      <div class="accion">${ideas.length?"Ver o editar":"Agregar mi lista"}</div></button></li>`;
+  }).join("");
+}
+
+let actual = null;
+function abrir(n){
+  actual = n;
+  const d = datos(n);
+  $("dnombre").textContent = "Lista de " + n;
+  $("filas").innerHTML = [0,1,2].map(k => {
+    const i = (d.ideas||[])[k] || {};
+    return `<div class="fila"><div><label for="t${k}">Idea ${k+1}</label><input id="t${k}" value="${esc(i.t||"")}" maxlength="80"></div>
+    <div><label for="p${k}">Precio</label><input id="p${k}" type="number" inputmode="decimal" min="${MIN}" max="${MAX}" step="any" value="${i.p??""}"></div></div>`;
+  }).join("");
+  $("tienda").value = d.tienda || "";
+  $("gustos").value = d.gustos || "";
+  $("err").textContent = "";
+  $("dlg").showModal();
+}
+
+function leer(){
+  const ideas = [0,1,2].map(k => ({t:$("t"+k).value.trim(), p:$("p"+k).value.trim()}));
+  return {ideas, tienda:$("tienda").value.trim(), gustos:$("gustos").value.trim()};
+}
+function validar(d){
+  let ok = true, msg = "";
+  d.ideas.forEach((i,k) => {
+    const pe = $("p"+k), te = $("t"+k);
+    pe.classList.remove("mal"); te.classList.remove("mal");
+    const precio = Number(i.p);
+    if (i.t && (i.p==="" || isNaN(precio) || precio<MIN || precio>MAX)) {
+      pe.classList.add("mal"); ok = false;
+      msg = msg || `El precio de la idea ${k+1} debe estar entre ${MIN} y ${MAX}.`;
+    } else if (!i.t && i.p!=="") {
+      te.classList.add("mal"); ok = false;
+      msg = msg || `Escribe qué regalo es la idea ${k+1} o borra su precio.`;
+    }
+  });
+  $("err").textContent = msg;
+  return ok;
+}
+function texto(n,d){
+  const l = llenas(d).map((i,k)=>`${k+1}. ${i.t} – ${dinero(i.p)}`);
+  let s = `Lista de regalos de ${n}:\n${l.join("\n")}`;
+  if (d.tienda) s += `\nDónde: ${d.tienda}`;
+  if (d.gustos) s += `\nGustos: ${d.gustos}`;
+  return s;
+}
+function aviso(m){
+  const a = $("aviso"); a.textContent = m; a.classList.add("ver");
+  clearTimeout(aviso.t); aviso.t = setTimeout(()=>a.classList.remove("ver"), 2200);
+}
+async function copiar(t, m){
+  try { await navigator.clipboard.writeText(t); aviso(m); }
+  catch(e){ window.prompt("Copia el texto:", t); }
+}
+
+$("tags").addEventListener("click", e => { const b = e.target.closest("button[data-n]"); if (b) abrir(b.dataset.n); });
+$("frm").addEventListener("submit", e => {
+  e.preventDefault();
+  const d = leer();
+  if (!validar(d)) return;
+  local[actual] = d;
+  try { localStorage.setItem(KEY, JSON.stringify(local)); } catch(e){}
+  $("dlg").close(); pintar(); aviso("Lista guardada");
+});
+$("copiar").addEventListener("click", () => {
+  const d = leer();
+  if (!validar(d)) return;
+  if (!llenas(d).length) { $("err").textContent = "Agrega al menos una idea para copiar."; return; }
+  copiar(texto(actual,d), "Lista copiada");
+});
+$("cerrar").addEventListener("click", () => $("dlg").close());
+$("dlg").addEventListener("click", e => { if (e.target === $("dlg")) $("dlg").close(); });
+$("exportar").addEventListener("click", () => {
+  const todo = {}; NOMBRES.forEach(n => { if (llenas(datos(n)).length) todo[n] = datos(n); });
+  copiar("const LISTAS = " + JSON.stringify(todo,null,2) + ";", "Copiado. Pégalo en index.html");
+});
+pintar();
+</script>
+</body>
+</html>
